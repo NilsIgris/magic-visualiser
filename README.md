@@ -78,3 +78,17 @@ npm test                  # tests unitaires (parseur, analyse, exports, résolut
 npm run test:e2e          # scénario complet de l'interface (Linux : xvfb-run -a npm run test:e2e)
 node tools/package.mjs    # construit les versions Windows et Linux dans dist/
 ```
+
+## Upload le .exe bien lourd
+Utiliser [git lfs](https://github.com/git-lfs/git-lfs?utm_source=gitlfs_site&utm_medium=installation_link&utm_campaign=gitlfs#installing)
+```bash
+git lfs track "*.exe"
+```
+
+Si jamais ça plante toujours, lancer
+
+```bash
+git lfs migrate import --include="*.exe"
+```
+
+
