@@ -1,0 +1,78 @@
+# Publication d'une version : pousse un tag vX.Y.Z identique à "version" dans package.json.
+#   git tag v1.2.0 && git push origin v1.2.0
+# Les fichiers Windows et Linux sont construits et joints à une release GitHub, avec les fichiers
+# latest.yml / latest-linux.yml que lit la mise à jour automatique de l'application.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Vérifications
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Le tag correspond à la version de package.json
+        run: |
+          v="v$(node -p "require('./package.json').version")"
+          if [ "$v" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Le tag $GITHUB_REF_NAME ne correspond pas à package.json ($v)."
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm test
+
+  windows:
+    name: Windows (installateur + portable)
+    runs-on: windows-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node tools/build.mjs --win --publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MTG_RELEASE_TYPE: draft
+
+  linux:
+    name: Linux (AppImage + archive)
+    runs-on: ubuntu-latest
+    needs: windows
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node tools/build.mjs --linux --publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MTG_RELEASE_TYPE: draft
+
+  publish:
+    name: Publication de la release
+    runs-on: ubuntu-latest
+    needs: [windows, linux]
+    steps:
+      - name: Passe le brouillon en release publiée
+        run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

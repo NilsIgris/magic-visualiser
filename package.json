@@ -1,0 +1,40 @@
+{
+  "name": "mtg-deck-lab",
+  "version": "1.2.0",
+  "description": "Préparation de decks Magic: The Gathering et cartographie des interactions",
+  "homepage": "https://github.com/NilsIgris/magic-visualiser#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NilsIgris/magic-visualiser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NilsIgris/magic-visualiser/issues"
+  },
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/unit.test.mjs test/analyzer2.test.mjs test/deckops.test.mjs test/v11.test.mjs test/inventory.test.mjs test/resolve.test.mjs",
+    "test:e2e": "node test/run-e2e.mjs",
+    "build": "node tools/build.mjs",
+    "release": "node tools/build.mjs --publish"
+  },
+  "keywords": [],
+  "author": "Nils",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@fontsource/alegreya": "^5.3.0",
+    "@fontsource/alegreya-sans": "^5.3.0",
+    "cytoscape": "^3.34.4",
+    "cytoscape-fcose": "^2.2.0",
+    "electron": "^45.0.0",
+    "electron-builder": "^26.18.0"
+  },
+  "productName": "MTG Deck Lab",
+  "type": "module",
+  "dependencies": {
+    "electron-updater": "^6.8.11"
+  }
+}

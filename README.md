@@ -1,14 +1,20 @@
 # MTG Deck Lab
 
 Application de bureau (Windows et Linux) pour préparer des decks Magic: The Gathering, au format Commander en priorité :
-importer une liste, la voir en piles de cartes, cartographier les interactions entre les cartes et analyser le deck.
+importer une liste, la voir en piles de cartes, cartographier les interactions entre les cartes, analyser le deck et
+suivre l'inventaire des cartes que tu possèdes.
+
+[![Tests](https://github.com/NilsIgris/magic-visualiser/actions/workflows/ci.yml/badge.svg)](https://github.com/NilsIgris/magic-visualiser/actions/workflows/ci.yml)
 
 ## Installation
 
+Télécharge la dernière version sur la page
+[Releases](https://github.com/NilsIgris/magic-visualiser/releases/latest) du dépôt.
+
 ### Windows
-- **Installateur (recommandé)** : lance `MTG-Deck-Lab-Setup-1.1.0.exe`. Il installe l'application pour ton compte,
+- **Installateur (recommandé)** : lance `MTG-Deck-Lab-Setup-1.2.0.exe`. Il installe l'application pour ton compte,
   crée les raccourcis, et c'est cette version qui peut se mettre à jour toute seule.
-- **Version portable** : décompresse `MTG-Deck-Lab-1.1.0-windows-portable.zip` et lance `MTG Deck Lab.exe`.
+- **Version portable** : décompresse `MTG-Deck-Lab-1.2.0-windows-portable.zip` et lance `MTG Deck Lab.exe`.
 
 L'application n'est pas signée numériquement (un certificat de signature est payant) : au premier lancement,
 Windows SmartScreen peut afficher « Windows a protégé votre ordinateur ». Clique sur **Informations complémentaires**,
@@ -17,10 +23,10 @@ puis **Exécuter quand même**.
 ### Linux
 - **AppImage (recommandé, se met à jour seule)** :
   ```bash
-  chmod +x MTG-Deck-Lab-1.1.0-x86_64.AppImage
-  ./MTG-Deck-Lab-1.1.0-x86_64.AppImage
+  chmod +x MTG-Deck-Lab-1.2.0-x86_64.AppImage
+  ./MTG-Deck-Lab-1.2.0-x86_64.AppImage
   ```
-- **Archive** : `tar -xzf MTG-Deck-Lab-1.1.0-linux-x64.tar.gz`, puis dans le dossier :
+- **Archive** : `tar -xzf MTG-Deck-Lab-1.2.0-linux-x64.tar.gz`, puis dans le dossier :
   `sudo chown root:root chrome-sandbox && sudo chmod 4755 chrome-sandbox`, puis `./mtg-deck-lab`.
 
 Sur les distributions qui restreignent les espaces de noms utilisateur (Ubuntu 24.04 et suivantes), Electron peut refuser
@@ -56,10 +62,29 @@ l'AppImage, lance-la avec `--no-sandbox` (cela désactive une protection de Chro
      de cartes n'est envoyée à Commander Spellbook que lorsque tu lances l'analyse.
 8. **Versions** (menu « … ») : enregistre l'état du deck, compare deux versions ou deux decks, restaure une version.
    Une version automatique est créée avant chaque remplacement de contenu ou restauration.
-9. **Ma collection** (accueil ou menu « … ») : importe ta collection (liste ou CSV ; la colonne `Scryfall ID` d'un export
-   ManaBox est reconnue). Les cartes absentes sont signalées sur le board et listées dans « Cartes manquantes ».
+9. **Inventaire** (onglet de l'accueil, à côté de « Mes decks ») : importe les cartes que tu possèdes (liste simple, export
+   Arena/MTGO, CSV ; la colonne `Scryfall ID` d'un export ManaBox est reconnue), en ajout ou en remplacement.
+   - **Mes cartes** : recherche, filtres (couleur, type, rareté, utilisation), tri (nom, couleur, type, coût, rareté,
+     quantité, exemplaires disponibles, nombre de decks, ajout récent), vue liste ou images, quantité modifiable.
+     Chaque carte indique **dans quels decks elle est utilisée** (clic = ouvrir le deck sur la carte) et s'il en manque
+     pour monter tous ces decks. Bouton **Deck** : ajouter la carte à un deck, avec un avertissement si elle sort de
+     l'identité couleur ou si ses exemplaires sont déjà pris ailleurs.
+   - **À acquérir** : la liste des cartes à acheter pour monter tous tes decks en même temps, ou un seul deck ; copiable.
+   - Export CSV de l'inventaire.
+10. **Collection** (onglet d'un deck, touche `5`) : la situation de chaque carte du deck par rapport à ton inventaire.
+    - **Rangée dans un autre deck** : tu la possèdes, mais tes exemplaires sont dans un deck **monté** ; il faut l'y reprendre.
+    - **Partagée** : tu en as assez pour ce deck, mais si tu la gardes ici, tel autre deck (non monté) en manquera.
+    - **Manquante** : tu n'en as pas assez, même en défaisant tes autres decks (liste d'achat copiable).
+    - **Possédée et libre** : rien à faire.
+    - **Suggestions** : cartes de ton inventaire absentes du deck, dans son identité couleur, classées par nombre
+      d'interactions avec le deck (même moteur que l'onglet Interactions).
 
-Raccourcis : `1` à `4` changent de vue, `Ctrl+K` ajouter une carte, `Ctrl+I` importer, `Ctrl+F` ou `/` filtrer,
+    Un deck **monté** (interrupteur dans l'onglet Collection, ou menu de la tuile) est un deck dont les cartes sont
+    physiquement rangées dedans : ses exemplaires lui sont réservés en priorité. Seules les zones Commandant et Deck
+    comptent ; la réserve et « Peut-être » ne réservent rien. Les terrains de base sont considérés comme possédés sans
+    limite (case à cocher dans l'inventaire). Les exemplaires sont comptés **par carte**, toutes impressions confondues.
+
+Raccourcis : `1` à `5` changent de vue, `Ctrl+K` ajouter une carte, `Ctrl+I` importer, `Ctrl+F` ou `/` filtrer,
 `Ctrl+Z` / `Ctrl+Y` annuler / rétablir, `Ctrl+L` lier la carte sélectionnée, `Suppr` retirer la carte sélectionnée,
 `Échap` désélectionner.
 
@@ -76,14 +101,9 @@ panneau de la carte. Les liens validés ou rejetés sont conservés quand tu mod
 
 ## Mises à jour automatiques
 
-Elles passent par les « Releases » d'un dépôt GitHub. Mise en place (une seule fois) :
-1. Crée un dépôt GitHub (public, pour que l'application puisse lire les versions sans identifiant).
-2. Renseigne `owner` et `repo` dans `release.config.json`.
-3. Crée un jeton GitHub (« fine-grained », droit *Contents: Read and write* sur ce dépôt).
-4. Publie : `GH_TOKEN=ton_jeton npm run release` (sous Windows PowerShell : `$env:GH_TOKEN="ton_jeton"; npm run release`).
-   Sous Windows, seuls les fichiers Windows sont construits ; sous Linux, les fichiers Linux et Windows (wine requis).
-5. Pour chaque nouvelle version : augmente `version` dans `package.json`, puis relance l'étape 4. La release est publiée
-   directement (avec le fichier `latest.yml` que lit l'application).
+L'application interroge les [Releases](https://github.com/NilsIgris/magic-visualiser/releases) du dépôt
+`NilsIgris/magic-visualiser` (réglé dans `release.config.json`). **Le dépôt doit être public** : l'application lit les
+versions sans identifiant, et un dépôt privé répond « introuvable ».
 
 Comportement : l'installateur Windows et l'AppImage téléchargent et installent la nouvelle version à la demande
 (Réglages → Mises à jour, ou notification au démarrage). Les versions portables signalent seulement qu'une version existe.
@@ -110,14 +130,45 @@ npm run test:e2e          # scénario complet de l'interface (Linux : xvfb-run -
 npm run build             # livrables dans dist/ (sous Linux, l'installateur Windows nécessite wine)
 ```
 
-## Upload le .exe bien lourd
-Utiliser [git lfs](https://github.com/git-lfs/git-lfs?utm_source=gitlfs_site&utm_medium=installation_link&utm_campaign=gitlfs#installing)
-```bash
-git lfs track "*.exe"
-```
+Sous Windows, `npm run build` ne construit que les fichiers Windows.
 
-Si jamais ça plante toujours, lancer
+### Organisation
 
-```bash
-git lfs migrate import --include="*.exe"
-```
+| Dossier | Contenu |
+|---|---|
+| `src/main` | processus principal Electron : fenêtre, stockage des decks, Scryfall, cache d'images, mises à jour |
+| `src/preload.cjs` | pont sécurisé entre l'interface et le processus principal |
+| `src/renderer` | interface (HTML, CSS, modules JS sans framework, bibliothèques et polices embarquées) |
+| `src/shared` | logique pure partagée et testée : import, analyse des interactions, probabilités, inventaire |
+| `test` | tests unitaires (`*.test.mjs`), faux Scryfall / Commander Spellbook, scénario e2e |
+| `tools` | construction des livrables (`build.mjs`) et copie des bibliothèques (`vendor.mjs`) |
+| `.github/workflows` | tests automatiques et publication des versions |
+
+### Publier une nouvelle version
+
+La publication est faite par GitHub Actions (`.github/workflows/release.yml`), aucun jeton à créer :
+
+1. Augmente `version` dans `package.json` (ex. `1.2.1`), puis `npm install` pour mettre `package-lock.json` à jour.
+2. Commit et push.
+3. Pousse le tag correspondant :
+   ```bash
+   git tag v1.2.1
+   git push origin v1.2.1
+   ```
+4. GitHub Actions lance les tests, construit les fichiers Windows (sur une machine Windows) et Linux, les joint à une
+   release `v1.2.1` puis la publie. Les applications installées la proposent au démarrage suivant.
+
+Le tag doit être identique à la version de `package.json`, sinon la publication s'arrête. Le workflow demande lui-même
+le droit d'écriture sur le dépôt ; s'il échoue quand même avec une erreur 403, vérifie Settings → Actions → General →
+Workflow permissions.
+
+Publication à la main (sans GitHub Actions) : jeton GitHub « fine-grained » avec *Contents: Read and write* sur le dépôt,
+puis `GH_TOKEN=ton_jeton npm run release` (PowerShell : `$env:GH_TOKEN="ton_jeton"; npm run release`).
+
+Les fichiers compilés ne sont **pas** versionnés dans Git (`dist/` est ignoré) : ils vivent dans les Releases, qui sont
+faites pour ça (pas de quota Git LFS, fichiers jusqu'à 2 Go).
+
+## Licence
+
+Code sous licence MIT (fichier `LICENSE`). Les bibliothèques embarquées gardent leur licence
+(`src/renderer/vendor/LICENSES.txt`).

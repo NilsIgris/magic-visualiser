@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' mtgimg: data: blob:; font-src 'self'; connect-src 'self' mtgimg:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>MTG Deck Lab</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="vendor/layout-base.js"></script>
+  <script src="vendor/cose-base.js"></script>
+  <script src="vendor/cytoscape.min.js"></script>
+  <script src="vendor/cytoscape-fcose.js"></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <div id="app" data-view="loading">
+    <header id="topbar"></header>
+    <main id="main">
+      <section id="view-library" class="view" hidden></section>
+      <section id="view-inventory" class="view" hidden></section>
+      <section id="view-board" class="view" hidden></section>
+      <section id="view-graph" class="view" hidden></section>
+      <section id="view-links" class="view" hidden></section>
+      <section id="view-analysis" class="view" hidden></section>
+      <section id="view-collection" class="view" hidden></section>
+    </main>
+    <aside id="inspector" hidden></aside>
+    <footer id="statusbar" hidden></footer>
+  </div>
+  <div id="overlay-root"></div>
+  <div id="toast-root" aria-live="polite"></div>
+  <div id="hover-preview" hidden></div>
+</body>
+</html>

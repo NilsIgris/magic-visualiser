@@ -1,0 +1,5 @@
+{
+  "_aide": "Dépôt GitHub dont les Releases servent aux mises à jour automatiques. Vider owner et repo pour construire sans mises à jour.",
+  "owner": "NilsIgris",
+  "repo": "magic-visualiser"
+}

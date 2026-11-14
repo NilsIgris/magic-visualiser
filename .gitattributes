@@ -1,3 +1,5 @@
-*.exe filter=lfs diff=lfs merge=lfs -text
-MTG filter=lfs diff=lfs merge=lfs -text
-MTG[[:space:]]Deck[[:space:]]Lab.exe filter=lfs diff=lfs merge=lfs -text
+# Fins de ligne LF dans le dépôt, quel que soit le système
+* text=auto eol=lf
+*.ico binary
+*.png binary
+*.woff2 binary

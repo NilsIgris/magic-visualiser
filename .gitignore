@@ -1,0 +1,14 @@
+# Dépendances et sorties de build
+node_modules/
+dist/
+test-output/
+test-output-packaged/
+*.log
+
+# Anciennes versions compilées gardées sur le disque, à ne pas versionner
+_ancienne-version-*/
+
+# Systèmes
+.DS_Store
+Thumbs.db
+desktop.ini
