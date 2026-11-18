@@ -119,55 +119,6 @@ Une version construite sans dépôt configuré n'affiche pas de mise à jour.
 Magic: The Gathering, ses noms de cartes et illustrations appartiennent à Wizards of the Coast. Application non officielle,
 ni produite ni approuvée par Wizards of the Coast. Données de cartes : Scryfall. Données de combos : Commander Spellbook.
 
-## Développement
-
-```bash
-npm install
-node tools/vendor.mjs     # copie Cytoscape et les polices dans src/renderer
-npm start                 # lance l'application
-npm test                  # tests unitaires
-npm run test:e2e          # scénario complet de l'interface (Linux : xvfb-run -a npm run test:e2e)
-npm run build             # livrables dans dist/ (sous Linux, l'installateur Windows nécessite wine)
-```
-
-Sous Windows, `npm run build` ne construit que les fichiers Windows.
-
-### Organisation
-
-| Dossier | Contenu |
-|---|---|
-| `src/main` | processus principal Electron : fenêtre, stockage des decks, Scryfall, cache d'images, mises à jour |
-| `src/preload.cjs` | pont sécurisé entre l'interface et le processus principal |
-| `src/renderer` | interface (HTML, CSS, modules JS sans framework, bibliothèques et polices embarquées) |
-| `src/shared` | logique pure partagée et testée : import, analyse des interactions, probabilités, inventaire |
-| `test` | tests unitaires (`*.test.mjs`), faux Scryfall / Commander Spellbook, scénario e2e |
-| `tools` | construction des livrables (`build.mjs`) et copie des bibliothèques (`vendor.mjs`) |
-| `.github/workflows` | tests automatiques et publication des versions |
-
-### Publier une nouvelle version
-
-La publication est faite par GitHub Actions (`.github/workflows/release.yml`), aucun jeton à créer :
-
-1. Augmente `version` dans `package.json` (ex. `1.2.1`), puis `npm install` pour mettre `package-lock.json` à jour.
-2. Commit et push.
-3. Pousse le tag correspondant :
-   ```bash
-   git tag v1.2.1
-   git push origin v1.2.1
-   ```
-4. GitHub Actions lance les tests, construit les fichiers Windows (sur une machine Windows) et Linux, les joint à une
-   release `v1.2.1` puis la publie. Les applications installées la proposent au démarrage suivant.
-
-Le tag doit être identique à la version de `package.json`, sinon la publication s'arrête. Le workflow demande lui-même
-le droit d'écriture sur le dépôt ; s'il échoue quand même avec une erreur 403, vérifie Settings → Actions → General →
-Workflow permissions.
-
-Publication à la main (sans GitHub Actions) : jeton GitHub « fine-grained » avec *Contents: Read and write* sur le dépôt,
-puis `GH_TOKEN=ton_jeton npm run release` (PowerShell : `$env:GH_TOKEN="ton_jeton"; npm run release`).
-
-Les fichiers compilés ne sont **pas** versionnés dans Git (`dist/` est ignoré) : ils vivent dans les Releases, qui sont
-faites pour ça (pas de quota Git LFS, fichiers jusqu'à 2 Go).
-
 ## Licence
 
 Code sous licence MIT (fichier `LICENSE`). Les bibliothèques embarquées gardent leur licence
